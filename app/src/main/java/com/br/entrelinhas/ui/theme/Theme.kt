@@ -4,6 +4,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+import com.br.entrelinhas.data.model.BookStatus
 
 private val LightColorScheme = lightColorScheme(
     primary = PrimaryLight,
@@ -59,7 +61,7 @@ private val DarkColorScheme = darkColorScheme(
  */
 @Composable
 fun EntrelinhasTheme(
-    darkTheme: Boolean = false,
+    darkTheme: Boolean,
     content: @Composable () -> Unit
 ) {
     val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
@@ -77,13 +79,13 @@ fun EntrelinhasTheme(
  * (Lendo = cor primária da marca, Desejado = azul, Lido = verde).
  */
 @Composable
-fun statusContainerColors(status: com.br.entrelinhas.data.model.BookStatus): Pair<androidx.compose.ui.graphics.Color, androidx.compose.ui.graphics.Color> {
+fun statusContainerColors(status: BookStatus): Pair<Color, Color> {
     return when (status) {
-        com.br.entrelinhas.data.model.BookStatus.LENDO ->
+        BookStatus.LENDO ->
             MaterialTheme.colorScheme.primaryContainer to MaterialTheme.colorScheme.onPrimaryContainer
-        com.br.entrelinhas.data.model.BookStatus.DESEJADO ->
+        BookStatus.DESEJADO ->
             MaterialTheme.colorScheme.secondaryContainer to MaterialTheme.colorScheme.onSecondaryContainer
-        com.br.entrelinhas.data.model.BookStatus.LIDO ->
+        BookStatus.LIDO ->
             MaterialTheme.colorScheme.tertiaryContainer to MaterialTheme.colorScheme.onTertiaryContainer
     }
 }
