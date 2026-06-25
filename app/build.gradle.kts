@@ -34,6 +34,7 @@ android {
         // Adicione as chaves como campos de BuildConfig
         buildConfigField("String", "SUPABASE_URL", "\"${getSecret("PUBLIC_SUPABASE_URL")}\"")
         buildConfigField("String", "SUPABASE_ANON_KEY", "\"${getSecret("PUBLIC_SUPABASE_ANON_KEY")}\"")
+        buildConfigField("String", "ADMIN_KEY", "\"${getSecret("PUBLIC_ADMIN_KEY")}\"")
     }
 
     buildTypes {
