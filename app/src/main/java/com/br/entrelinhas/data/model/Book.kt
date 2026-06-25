@@ -1,21 +1,20 @@
 package com.br.entrelinhas.data.model
 
-/**
- * Equivalente ao enum "status_livro" gerado pelo Supabase em database.types.ts:
- *   status_livro: "Desejado" | "Lendo" | "Lido"
- */
+/** Espelha o enum "status_livro" do Supabase: "Desejado" | "Lendo" | "Lido". */
 enum class BookStatus(val label: String) {
     LENDO("Lendo"),
     DESEJADO("Desejado"),
-    LIDO("Lido")
+    LIDO("Lido");
+
+    companion object {
+        fun fromDbValue(value: String): BookStatus =
+            entries.firstOrNull { it.label == value } ?: DESEJADO
+    }
 }
 
 /**
- * Modelo Kotlin equivalente à tabela "Livro" do Supabase (database.types.ts).
- * Nesta etapa não há backend/Supabase: os valores vêm apenas de data/mock/MockBooks.kt.
- *
- * Campos originais (TypeScript) -> Kotlin:
- *   idLivro, nome, autor, numPag, numPagRead, status, ano, text, dtInicial, dtFinal, img
+ * Modelo de domínio correspondente à tabela "Livro" do Supabase.
+ * É o único tipo de Book que a UI conhece — nunca expõe BookEntity ou BookDto.
  */
 data class Book(
     val idLivro: Int,
@@ -26,24 +25,17 @@ data class Book(
     val status: BookStatus,
     val ano: Int?,
     val text: String?,
-    val dtInicial: String?, // formato ISO "yyyy-MM-dd", ou null se não informado
-    val dtFinal: String?,   // formato ISO "yyyy-MM-dd", ou null se não informado
-    val img: String?,       // URL pública (fictícia) da capa
-    val idUsuario: String
+    val dtInicial: String?,   // ISO "yyyy-MM-dd" ou null
+    val dtFinal: String?,     // ISO "yyyy-MM-dd" ou null
+    val img: String?          // URL pública da capa ou null
 ) {
-    /** Percentual de páginas lidas, de 0 a 100. */
     val progressPercent: Int
         get() = if (numPag > 0) {
-            ((numPagRead.toFloat() / numPag.toFloat()) * 100).toInt().coerceIn(0, 100)
-        } else {
-            0
-        }
+            ((numPagRead.toFloat() / numPag) * 100).toInt().coerceIn(0, 100)
+        } else 0
 }
 
-/**
- * Converte uma data no formato ISO "yyyy-MM-dd" para "dd/MM/yyyy".
- * Retorna "Não informado" caso a data seja nula ou vazia.
- */
+/** Formata data ISO "yyyy-MM-dd" → "dd/MM/yyyy", ou "Não informado" se nula. */
 fun formatBookDate(isoDate: String?): String {
     if (isoDate.isNullOrBlank()) return "Não informado"
     val parts = isoDate.split("-")
