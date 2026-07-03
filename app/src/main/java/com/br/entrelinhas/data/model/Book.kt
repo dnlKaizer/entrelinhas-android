@@ -1,5 +1,8 @@
 package com.br.entrelinhas.data.model
 
+import com.br.entrelinhas.R
+import com.br.entrelinhas.data.config.SupabaseConfig
+
 /** Espelha o enum "status_livro" do Supabase: "Desejado" | "Lendo" | "Lido". */
 enum class BookStatus(val label: String) {
     LENDO("Lendo"),
@@ -40,4 +43,13 @@ fun formatBookDate(isoDate: String?): String {
     if (isoDate.isNullOrBlank()) return "Não informado"
     val parts = isoDate.split("-")
     return if (parts.size == 3) "${parts[2]}/${parts[1]}/${parts[0]}" else isoDate
+}
+
+fun getCoverUrl(img: String?): Any {
+    val supabaseUrl = SupabaseConfig.SUPABASE_URL
+    return if (!img.isNullOrBlank()) {
+        "$supabaseUrl/storage/v1/object/public/covers/$img"
+    } else {
+        R.drawable.book_placeholder
+    }
 }

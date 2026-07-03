@@ -24,9 +24,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.br.entrelinhas.data.config.SupabaseConfig
 import com.br.entrelinhas.data.mock.readingBooks
 import com.br.entrelinhas.data.model.Book
+import com.br.entrelinhas.data.model.getCoverUrl
 import com.br.entrelinhas.ui.theme.EntrelinhasTheme
 
 private val CARD_WIDTH = 140.dp
@@ -42,7 +42,7 @@ fun BookCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val coverImg = SupabaseConfig.getCoverUrl(book.img);
+    val coverImg = getCoverUrl(book.img)
 
     Card(
         onClick = onClick,
