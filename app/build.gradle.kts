@@ -1,6 +1,6 @@
 import java.util.Properties
 
-// Carrega o local.properties
+// Carrega o secrets.properties
 val secretsProperties = Properties().apply {
     val secretsPropertiesFile = rootProject.file("secrets.properties")
     if (secretsPropertiesFile.exists()) {
@@ -8,7 +8,7 @@ val secretsProperties = Properties().apply {
     }
 }
 
-// Helper para ler do local.properties ou de variáveis de ambiente do sistema (útil para CI/CD)
+// Helper para ler do secrets.properties ou de variáveis de ambiente do sistema (útil para CI/CD)
 fun getSecret(key: String): String {
     return secretsProperties.getProperty(key) ?: System.getenv(key) ?: ""
 }
@@ -37,6 +37,8 @@ android {
         buildConfigField("String", "SUPABASE_URL", "\"${getSecret("PUBLIC_SUPABASE_URL")}\"")
         buildConfigField("String", "SUPABASE_ANON_KEY", "\"${getSecret("PUBLIC_SUPABASE_ANON_KEY")}\"")
         buildConfigField("String", "ADMIN_KEY", "\"${getSecret("PUBLIC_ADMIN_KEY")}\"")
+        buildConfigField("String", "ADMIN_EMAIL", "\"${getSecret("PUBLIC_ADMIN_EMAIL")}\"")
+        buildConfigField("String", "ADMIN_PASSWORD", "\"${getSecret("PUBLIC_ADMIN_PASSWORD")}\"")
     }
 
     buildTypes {
@@ -47,13 +49,17 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_25
+        targetCompatibility = JavaVersion.VERSION_25
     }
     buildFeatures {
         compose = true
         buildConfig = true
     }
+}
+
+kotlin {
+    jvmToolchain(25)
 }
 
 dependencies {
@@ -83,6 +89,7 @@ dependencies {
     implementation(libs.supabase.postgrest)
     implementation(libs.supabase.storage)
     implementation(libs.ktor.client.okhttp)
+    implementation(libs.auth.kt)
 
     // Room
     implementation(libs.room.runtime)
