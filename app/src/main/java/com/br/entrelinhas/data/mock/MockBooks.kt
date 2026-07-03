@@ -19,8 +19,7 @@ val readingBooks: List<Book> = listOf(
         dtInicial = "2026-02-02",
         dtFinal = null,
         numPagRead = 456,
-        img = "51511986-9897-4fe6-bcd0-f0eb6ad4f061/mnw4ulpn-3ve8xk.jpg",
-        idUsuario = "51511986-9897-4fe6-bcd0-f0eb6ad4f061"
+        img = "51511986-9897-4fe6-bcd0-f0eb6ad4f061/mnw4ulpn-3ve8xk.jpg"
     ),
     Book(
         idLivro = 52,
@@ -33,8 +32,7 @@ val readingBooks: List<Book> = listOf(
         dtInicial = "2026-03-28",
         dtFinal = null,
         numPagRead = 144,
-        img = "51511986-9897-4fe6-bcd0-f0eb6ad4f061/mnw4wypm-ouipcy.jpg",
-        idUsuario = "51511986-9897-4fe6-bcd0-f0eb6ad4f061"
+        img = "51511986-9897-4fe6-bcd0-f0eb6ad4f061/mnw4wypm-ouipcy.jpg"
     )
 )
 
@@ -50,8 +48,7 @@ val wishedBooks: List<Book> = listOf(
         dtInicial = null,
         dtFinal = null,
         numPagRead = 0,
-        img = "51511986-9897-4fe6-bcd0-f0eb6ad4f061/mnw4stst-vbaonx.jpg",
-        idUsuario = "51511986-9897-4fe6-bcd0-f0eb6ad4f061"
+        img = "51511986-9897-4fe6-bcd0-f0eb6ad4f061/mnw4stst-vbaonx.jpg"
     ),
     Book(
         idLivro = 49,
@@ -64,8 +61,7 @@ val wishedBooks: List<Book> = listOf(
         dtInicial = null,
         dtFinal = null,
         numPagRead = 0,
-        img = "51511986-9897-4fe6-bcd0-f0eb6ad4f061/mnw4r2w1-f3jccd.jpg",
-        idUsuario = "51511986-9897-4fe6-bcd0-f0eb6ad4f061"
+        img = "51511986-9897-4fe6-bcd0-f0eb6ad4f061/mnw4r2w1-f3jccd.jpg"
     )
 )
 
@@ -81,8 +77,7 @@ val readBooks: List<Book> = listOf(
         dtInicial = "2025-01-01",
         dtFinal = "2025-03-01",
         numPagRead = 464,
-        img = "51511986-9897-4fe6-bcd0-f0eb6ad4f061/mnw4n5e3-kcz0zn.jpg",
-        idUsuario = "51511986-9897-4fe6-bcd0-f0eb6ad4f061"
+        img = "51511986-9897-4fe6-bcd0-f0eb6ad4f061/mnw4n5e3-kcz0zn.jpg"
     ),
     Book(
         idLivro = 48,
@@ -95,8 +90,7 @@ val readBooks: List<Book> = listOf(
         text = "Guia abrangente sobre construção de software com foco em qualidade e produtividade.",
         dtInicial = "2025-03-02",
         dtFinal = "2025-05-31",
-        img = "51511986-9897-4fe6-bcd0-f0eb6ad4f061/mnw4prbl-z39xik.jpg",
-        idUsuario = "51511986-9897-4fe6-bcd0-f0eb6ad4f061"
+        img = "51511986-9897-4fe6-bcd0-f0eb6ad4f061/mnw4prbl-z39xik.jpg"
     )
 )
 
