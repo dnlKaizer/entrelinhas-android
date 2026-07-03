@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.br.entrelinhas.data.model.Book
 import com.br.entrelinhas.data.model.BookStatus
@@ -56,6 +57,7 @@ fun BookSection(
             Text(
                 text = "${books.size} ${if (books.size == 1) "livro" else "livros"}",
                 style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.Normal,
                 color = onContainerColor
             )
         }
@@ -77,7 +79,6 @@ fun BookSection(
                 }
             }
         }
-
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(Modifier.height(12.dp))
     }
 }
