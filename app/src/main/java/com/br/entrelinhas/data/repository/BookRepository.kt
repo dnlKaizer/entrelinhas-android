@@ -91,20 +91,25 @@ class BookRepository(
         nome: String,
         autor: String?,
         numPag: Int,
+        numPagRead: Int,
         status: String,
         ano: Int?,
         text: String?,
-        imageUrl: String?
+        dtInicial: String?,
+        dtFinal: String?,
+        imageUrl: String?,
     ): Book {
         val dto = BookInsertDto(
             idUsuario  = SupabaseConfig.ADMIN_KEY,
             nome       = nome,
             numPag     = numPag,
-            numPagRead = 0,
+            numPagRead = numPagRead,
             status     = status,
             autor      = autor,
             ano        = ano,
             text       = text,
+            dtInicial  = dtInicial,
+            dtFinal    = dtFinal,
             img        = imageUrl
         )
         val created = remoteDataSource.insertBook(dto)

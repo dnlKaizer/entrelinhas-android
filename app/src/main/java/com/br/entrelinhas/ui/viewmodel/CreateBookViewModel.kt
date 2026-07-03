@@ -65,9 +65,12 @@ class CreateBookViewModel(
         nome: String,
         autor: String,
         numPagStr: String,
+        numPagReadStr: String,
         status: String,
         anoStr: String,
-        descricao: String
+        descricao: String,
+        dataInicio: String,
+        dataFim: String
     ) {
         // Validação dos campos obrigatórios
         val validationError = validate(nome, numPagStr)
@@ -77,6 +80,7 @@ class CreateBookViewModel(
         }
 
         val numPag = numPagStr.trim().toIntOrNull() ?: 0
+        val numPagRead = numPagReadStr.trim().toIntOrNull() ?: 0
         val ano = anoStr.trim().takeIf { it.isNotEmpty() }?.toIntOrNull()
 
         viewModelScope.launch {
@@ -95,9 +99,12 @@ class CreateBookViewModel(
                     nome       = nome.trim(),
                     autor      = autor.trim().takeIf { it.isNotEmpty() },
                     numPag     = numPag,
+                    numPagRead = numPagRead,
                     status     = status,
                     ano        = ano,
                     text       = descricao.trim().takeIf { it.isNotEmpty() },
+                    dtInicial  = dataInicio.trim().takeIf { it.isNotEmpty() },
+                    dtFinal    = dataFim.trim().takeIf { it.isNotEmpty() },
                     imageUrl   = imageUrl
                 )
 

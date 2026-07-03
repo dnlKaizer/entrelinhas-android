@@ -63,6 +63,9 @@ import com.br.entrelinhas.data.model.BookStatus
 import com.br.entrelinhas.ui.state.CreateBookUiState
 import com.br.entrelinhas.ui.theme.EntrelinhasTheme
 import com.br.entrelinhas.ui.viewmodel.CreateBookViewModel
+import com.br.entrelinhas.ui.components.DateField
+import com.br.entrelinhas.ui.components.BookDatePickerDialog
+import com.br.entrelinhas.ui.components.formatToSupabase
 
 // ─── Tela (com ViewModel) ─────────────────────────────────────────────────────
 
@@ -91,8 +94,8 @@ fun CreateBookScreen(
         onImageSelected  = { viewModel.onImageSelected(it) },
         onImageRemoved   = { viewModel.onImageRemoved() },
         onErrorDismissed = { viewModel.onErrorDismissed() },
-        onSubmit         = { nome, autor, numPag, status, ano, desc ->
-            viewModel.createBook(nome, autor, numPag, status, ano, desc)
+        onSubmit         = { nome, autor, numPag, numPagRead, status, ano, desc, dataInicio, dataFim ->
+            viewModel.createBook(nome, autor, numPag, numPagRead, status, ano, desc, dataInicio, dataFim)
         },
         modifier = modifier
     )
@@ -108,20 +111,26 @@ fun CreateBookContent(
     onImageSelected: (Uri) -> Unit,
     onImageRemoved: () -> Unit,
     onErrorDismissed: () -> Unit,
-    onSubmit: (nome: String, autor: String, numPag: String, status: String, ano: String, desc: String) -> Unit,
+    onSubmit: (nome: String, autor: String, numPag: String, numPagRead: String, status: String, ano: String, desc: String, dataInicio: String, dataFim: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     // Estado local do formulário (state hoisting para os campos de texto)
     var nome      by remember { mutableStateOf("") }
     var autor     by remember { mutableStateOf("") }
     var numPag    by remember { mutableStateOf("") }
+    var numPagRead   by remember { mutableStateOf("") }
     var ano       by remember { mutableStateOf("") }
     var descricao by remember { mutableStateOf("") }
     var status    by remember { mutableStateOf(BookStatus.DESEJADO) }
+    var dataInicio by remember { mutableStateOf("") }
+    var showDatePickerInicio by remember { mutableStateOf(false) }
+    var dataFim by remember { mutableStateOf("") }
+    var showDatePickerFim by remember { mutableStateOf(false) }
 
     // Erros de validação locais (exibidos inline, sem aguardar submit)
     var nomeError   by remember { mutableStateOf<String?>(null) }
     var numPagError by remember { mutableStateOf<String?>(null) }
+    var numPagReadError by remember { mutableStateOf<String?>(null) }
 
     val isLoading = uiState.isUploadingImage || uiState.isSaving
 
@@ -207,31 +216,79 @@ fun CreateBookContent(
 
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 OutlinedTextField(
-                    value         = numPag,
+                    value = numPag,
                     onValueChange = {
                         numPag = it.filter { c -> c.isDigit() }
                         numPagError = if (numPag.isBlank()) "Obrigatório."
                         else if ((numPag.toIntOrNull() ?: 0) <= 0) "Valor inválido."
                         else null
                     },
-                    label         = { Text("Páginas *") },
-                    isError       = numPagError != null,
-                    supportingText = numPagError?.let { { Text(it, color = MaterialTheme.colorScheme.error) } },
-                    singleLine    = true,
+                    label = { Text("Páginas *") },
+                    isError = numPagError != null,
+                    supportingText = numPagError?.let {
+                        {
+                            Text(
+                                it,
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        }
+                    },
+                    singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    modifier      = Modifier.weight(1f),
-                    enabled       = !isLoading
+                    modifier = Modifier.weight(1f),
+                    enabled = !isLoading
                 )
+
                 OutlinedTextField(
-                    value         = ano,
+                    value = ano,
                     onValueChange = { ano = it.filter { c -> c.isDigit() }.take(4) },
-                    label         = { Text("Ano") },
-                    singleLine    = true,
+                    label = { Text("Ano") },
+                    singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    modifier      = Modifier.weight(1f),
-                    enabled       = !isLoading
+                    modifier = Modifier.weight(1f),
+                    enabled = !isLoading
                 )
             }
+
+            DateField(
+                label = "Início da leitura",
+                value = dataInicio ,
+                onValueChange = { dataInicio = it },
+                onOpenPicker = { showDatePickerInicio = true },
+                enabled = !isLoading
+            )
+
+            if (showDatePickerInicio) {
+                BookDatePickerDialog(
+                    onDateSelected = { dataInicio = it },
+                    onDismiss = { showDatePickerInicio = false }
+                )
+            }
+
+            DateField(
+                label = "Fim da leitura",
+                value = dataFim ,
+                onValueChange = { dataFim = it },
+                onOpenPicker = { showDatePickerFim = true },
+                enabled = !isLoading
+            )
+
+            if (showDatePickerFim) {
+                BookDatePickerDialog(
+                    onDateSelected = { dataFim = it },
+                    onDismiss = { showDatePickerFim = false }
+                )
+            }
+
+            OutlinedTextField(
+                value = numPagRead,
+                onValueChange = { numPagRead = it.filter { c -> c.isDigit() }.take(4) },
+                label = { Text("Páginas lidas") },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                modifier = Modifier.fillMaxWidth(),
+                enabled = !isLoading
+            )
 
             // ── Seção: Status ────────────────────────────────────────────────
             Text("Status de Leitura", style = MaterialTheme.typography.titleMedium)
@@ -273,8 +330,21 @@ fun CreateBookContent(
                     else if ((numPag.toIntOrNull() ?: 0) <= 0) "Valor inválido."
                     else null
 
+                    val dtInicial = formatToSupabase(dataInicio)
+                    val dtFinal = formatToSupabase(dataFim)
+
                     if (nomeError == null && numPagError == null) {
-                        onSubmit(nome, autor, numPag, status.label, ano, descricao)
+                        onSubmit(
+                            nome,
+                            autor,
+                            numPag,
+                            numPagRead,
+                            status.label,
+                            ano,
+                            descricao,
+                            dtInicial,
+                            dtFinal
+                        )
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
@@ -405,7 +475,7 @@ private fun CreateBookEmptyPreview() {
             onImageSelected  = {},
             onImageRemoved   = {},
             onErrorDismissed = {},
-            onSubmit         = { _, _, _, _, _, _ -> }
+            onSubmit         = { _, _, _, _, _, _, _, _, _ -> }
         )
     }
 }
@@ -420,7 +490,7 @@ private fun CreateBookLoadingPreview() {
             onImageSelected  = {},
             onImageRemoved   = {},
             onErrorDismissed = {},
-            onSubmit         = { _, _, _, _, _, _ -> }
+            onSubmit         = { _, _, _, _, _, _, _, _, _ -> }
         )
     }
 }
