@@ -1,12 +1,11 @@
 package com.br.entrelinhas.data.config
 
 import com.br.entrelinhas.BuildConfig
-import com.br.entrelinhas.R
 
 object SupabaseConfig {
-    val supabaseUrl: String = BuildConfig.SUPABASE_URL
-    val supabaseKey: String = BuildConfig.SUPABASE_ANON_KEY
-    val adminKey: String = BuildConfig.ADMIN_KEY
+    const val SUPABASE_URL: String = BuildConfig.SUPABASE_URL
+    const val SUPABASE_KEY: String = BuildConfig.SUPABASE_ANON_KEY
+    const val ADMIN_KEY: String = BuildConfig.ADMIN_KEY
 
     fun getCoverUrl(img: String?): Any {
         return if (!img.isNullOrBlank()) {
